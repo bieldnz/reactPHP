@@ -1,0 +1,58 @@
+<?php 
+    header("Access-Control-Allow-Origin: *");
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Headers: *");
+
+    include_once 'conexao.php';
+
+    $response_json = file_get_contents("php://input");
+    $dados = json_decode($response_json, true);
+
+   /* $file_chunks = explode(";base64,", $dados->image);
+    $fileType = explode("image/", $file_chunks[0]);
+    $image_type = $fileType[1];
+    $base64Img = base64_decode($file_chunks[1]);
+
+    $response = [
+        "erro" => $base64Img
+      ];*/
+
+    if($dados){
+
+        /*$name = $_POST['name'];
+        $preco = $_POST['preco'];
+        $descricao = $_POST['descricao'];
+        $foto = $_FILES['foto'];
+        $image = $foto['name'];*/
+
+        $query_product = "INSERT INTO products (name, descricao, preco, foto) VALUES (:name, :descricao, :preco, :foto)";
+        $insert_products = $conn->prepare($query_product);
+
+        $insert_products->bindParam(':name', $dados['name']);
+        $insert_products->bindParam(':descricao', $dados['descricao']);
+        $insert_products->bindParam(':preco', $dados['preco']);
+        $insert_products->bindParam(':foto', $dados['foto']);
+
+        $insert_products->execute();
+
+        if($insert_products->rowCount()){
+            $response = [
+                "erro" => false,
+                "mensagem" => "asdf",
+            ];
+        }else{
+            $response = [
+                "erro" => true,
+                "mensagem" => "Não cadastrado"
+            ];
+        }
+    }else{
+        $response = [
+            "erro" => true,
+            "mensagem" => "asdsdfa"
+        ];
+    }
+
+    http_response_code(200);
+    echo json_encode($response);
+?>
