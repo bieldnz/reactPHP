@@ -14,10 +14,11 @@ $query_select_product = $conn->prepare($query_select);
 $query_select_product->bindParam(":id", $id);
 $query_select_product->execute();
 
+$response = ["MSG" => "DS"];
+
 if(($query_select_product) and ($query_select_product->rowCount() != 0)){
     $row_product = $query_select_product->fetch(PDO::FETCH_ASSOC);
     extract($row_product);
-    $response = ["MSG" => $foto];
     unlink("images/".$foto);
 }
 

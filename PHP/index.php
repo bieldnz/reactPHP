@@ -21,6 +21,9 @@ if (($result_products) and ($result_products->rowCount() != 0)) {
             'foto' => $foto
         ];
     }
-    echo json_encode($products_list);
-    http_response_code(200);
+    
+}else{
+    $products_list = ["MSG" => "Não há itens"];
 }
+echo json_encode($products_list);
+http_response_code(200);

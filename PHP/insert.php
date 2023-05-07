@@ -16,6 +16,8 @@
         $destination_path = getcwd().DIRECTORY_SEPARATOR;
         $target_path = $destination_path . "images". DIRECTORY_SEPARATOR . $foto;
 
+        //$response = ["MSG" => $name];
+
         $result = "INSERT INTO products (name, preco, descricao, foto) VALUES ('$name', '$preco', '$descricao','$foto')";
         $insert_products = $conn->prepare($result);
         $insert_products->execute();
@@ -27,9 +29,9 @@
                 ];
             }
             else{
-                $response = [
+              /*$response = [
                     "MSG" => "não funcionou"
-                ];
+                ];*/
             }
         }
 
@@ -39,7 +41,8 @@
         $response = [
             "OPA" => "kjdlasfasdfasdfasdgasgd*"
         ];
-        echo json_encode($response);
     }
+
+    echo json_encode($response);
     
 ?>

@@ -68,7 +68,6 @@ const Home = () => {
 
     return (
         <div>
-            <button onClick={() => console.log(responce.data)}>asfdfa</button>
             <ProductForm enviar={enviar} handleOnChange={handleOnChange} handleOnFile={handleOnFile} />
             <Listar get={get} excluir={excluir}/>
         </div>
