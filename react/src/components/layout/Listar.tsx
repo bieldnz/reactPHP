@@ -1,3 +1,5 @@
+import {Link} from "react-router-dom"
+
 type ListarProps = {
     get: any,
     excluir: any
@@ -6,6 +8,7 @@ type ListarProps = {
 const Listar = ({get, excluir}: ListarProps) => {
     return (
         <div>
+            Teste 1
             {get ? <div style={{marginTop: "20px"}}>
                 {Object.values(get).map((item: any) => (
                     <div key={item.id} style={{ marginLeft: "10px" }}>
@@ -13,7 +16,13 @@ const Listar = ({get, excluir}: ListarProps) => {
                         <p>Nome: {item.name}</p>
                         <p>Descrição: {item.descricao}</p>
                         <p>Preço: {item.preco}</p>
-                        <div><button onClick={() => excluir(item.id)}>excluir</button>-----<button>editar</button></div>
+                        <div>
+                            <button onClick={() => excluir(item.id)}>excluir</button>
+                            -----
+                            <button style={{padding: "0"}}>
+                                <Link to={`/edit/${item.id}`}>Editar</Link>
+                            </button>
+                        </div>
                         <p>--------------------------------------------------------------------</p>
                     </div>
                 ))}
