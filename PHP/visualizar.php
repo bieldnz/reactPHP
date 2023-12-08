@@ -18,10 +18,11 @@ if($query_product){
         "name" => $name,
         "preco" => $preco,
         "descricao" => $descricao,
-        "foto" => $foto
+        "foto" => $foto,
+        "users_id" => $users_id
     ];
 }else{
-    $response = ["msg" => $id];
+    $response = ["msg" => "Não funcionou"];
 }
 
 echo json_encode($response);

@@ -1,14 +1,22 @@
 import {useEffect, useState, ChangeEvent} from 'react'
+import {Link} from "react-router-dom"
 import {useParams} from "react-router-dom"
 import axios from "axios"
+import { useLocation, useNavigate } from 'react-router-dom'
 
-const Edit = (props: any) => {
+const Edit = () => {
 
     const [id, setId] = useState(useParams().id)
     const [product, setProduct] = useState<any>()
     const [responce, setResponce] = useState<any>({data: ""})
     const [fotoAtual, setFotoAtual] = useState<any>("")
     const categorias = ["Tecnologia", "Veículos", "Supermercado", "Veículos", "Casa e Movéis", "Esporte e Fitness", "Ferramentas", "Construção", "Indústria e Comércio", "Saude", "Beleza", "Moda", "Brinquedos"]
+    const history = useNavigate()
+    const locationNavigate = useLocation();
+    let search_id: any
+    if(locationNavigate.state){
+        search_id = locationNavigate.state.search_id
+    } 
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
         setProduct({ ...product, [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value })
@@ -25,7 +33,12 @@ const Edit = (props: any) => {
     const getProduct = async () => {
         await fetch(`http://localhost/cursophp/reactPHP/visualizar.php?id=`+id)
         .then((res) => res.json())
-        .then((data) => {setProduct(data); setFotoAtual(data.foto)})
+        .then((data) => {
+            setProduct(data);
+            setFotoAtual(data.foto)
+            console.log(data)
+        })
+        
     }
 
     const editar = async () => {
@@ -46,8 +59,14 @@ const Edit = (props: any) => {
     }, [id])
 
     useEffect(() => {
-        console.log(responce.data)
-    }, [responce])
+        if(product){
+            console.log(product.users_id)
+            console.log(search_id)
+            if(product.users_id != search_id){
+                history("/home")
+            }
+        }
+    }, [product])
 
     return (
         <form>
@@ -61,7 +80,10 @@ const Edit = (props: any) => {
             </select><br/>
             <input type='file' name='foto' onChange={(e: ChangeEvent<HTMLInputElement>) => handleOnFile(e)}/><br/>
             <img src={product ? `http://localhost/cursoPHP/reactPHP/images/${fotoAtual}` : ""} width="100px" height="100px" /><br/>
-            <button onClick={() => editar()}>Editar</button>            
+            <button onClick={() => editar()}>Editar</button>
+            <Link to="/home">
+                <button>Sair</button>
+            </Link>
         </form>
     )
 }

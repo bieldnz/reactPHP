@@ -1,27 +1,31 @@
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
 type ListarProps = {
     get: any,
     excluir: any
+    search_id: any
 }
 
-const Listar = ({get, excluir}: ListarProps) => {
+const Listar = ({get, excluir, search_id}: ListarProps) => {
+
+    const history = useNavigate()
+
+    const editar = (id: any) => {
+        history(`/edit/${id}`, {state:{search_id:search_id}})
+    }
+
     return (
         <div>
-            Teste 1
             {get ? <div style={{marginTop: "20px"}}>
                 {Object.values(get).map((item: any) => (
-                    <div key={item.id} style={{ marginLeft: "10px" }}>
+                    <div style={{ marginLeft: "10px" }} key={`product_${item.id}`}>
                         <img src={`http://localhost/cursoPHP/reactPHP/images/${item.foto}`} width="100px" height="100px" />
                         <p>Nome: {item.name}</p>
                         <p>Descrição: {item.descricao}</p>
                         <p>Preço: {item.preco}</p>
                         <div>
                             <button onClick={() => excluir(item.id)}>excluir</button>
-                            -----
-                            <button style={{padding: "0"}}>
-                                <Link to={`/edit/${item.id}`}>Editar</Link>
-                            </button>
+                            <button onClick={() => editar(item.id)}>Editar</button>
                         </div>
                         <p>--------------------------------------------------------------------</p>
                     </div>

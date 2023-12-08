@@ -6,8 +6,11 @@ header("Access-Control-Allow-Headers: *");
 
 include_once "conexao.php";
 
-$query_products = "SELECT * FROM products ORDER BY id DESC";
+$users_id = $_POST["users_id"];
+
+$query_products = "SELECT * FROM products WHERE users_id=:users_id ORDER BY id DESC";
 $result_products = $conn->prepare($query_products);
+$result_products->bindParam(":users_id", $users_id, PDO::PARAM_INT);
 $result_products->execute();
 
 if (($result_products) and ($result_products->rowCount() != 0)) {
@@ -18,7 +21,8 @@ if (($result_products) and ($result_products->rowCount() != 0)) {
             'name' => $name,
             'descricao' => $descricao,
             'preco' => $preco,
-            'foto' => $foto
+            'foto' => $foto,
+            'users_id' => $users_id
         ];
     }
     
