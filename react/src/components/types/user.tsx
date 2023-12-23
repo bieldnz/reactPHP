@@ -1,4 +1,5 @@
 export type UserLogin = {
-    login?: string | undefined
-    password?: string | undefined
+    id: number
+    login: string
+    password: string
 }

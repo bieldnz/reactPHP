@@ -12,13 +12,14 @@ $query_product = $conn->prepare($query);
 $query_product->bindParam(":id", $id, PDO::PARAM_INT);
 $query_product->execute();
 
-if($query_product){
+if(($query_product)and($query_product->rowCount() != 0)){
     extract($query_product->fetch(PDO::FETCH_ASSOC));
     $response = [
         "name" => $name,
         "preco" => $preco,
         "descricao" => $descricao,
         "foto" => $foto,
+        "categorias" => $categorias,
         "users_id" => $users_id
     ];
 }else{

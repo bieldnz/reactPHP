@@ -1,36 +1,41 @@
-import {Link, useNavigate} from "react-router-dom"
+import { Link } from "react-router-dom"
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Styles from '../style/listar.floating.module.css'
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import { ProductType } from "../types/products";
 
 type ListarProps = {
-    get: any,
-    excluir: any
-    search_id: any
+    get: ProductType[] | undefined,
+    excluir: (id: number) => Promise<void>,
+    search_id: string,
+    login: string
 }
 
-const Listar = ({get, excluir, search_id}: ListarProps) => {
-
-    const history = useNavigate()
-
-    const editar = (id: any) => {
-        history(`/edit/${id}`, {state:{search_id:search_id}})
-    }
+const Listar = ({ get, excluir, search_id, login }: ListarProps) => {
 
     return (
         <div>
-            {get ? <div style={{marginTop: "20px"}}>
-                {Object.values(get).map((item: any) => (
-                    <div style={{ marginLeft: "10px" }} key={`product_${item.id}`}>
-                        <img src={`http://localhost/cursoPHP/reactPHP/images/${item.foto}`} width="100px" height="100px" />
-                        <p>Nome: {item.name}</p>
-                        <p>Descrição: {item.descricao}</p>
-                        <p>Preço: {item.preco}</p>
-                        <div>
-                            <button onClick={() => excluir(item.id)}>excluir</button>
-                            <button onClick={() => editar(item.id)}>Editar</button>
-                        </div>
-                        <p>--------------------------------------------------------------------</p>
-                    </div>
+            {get && get.length > 0 ? <div style={{ marginTop: "20px" }} className={Styles.itemCard}>
+                {get.map((item: ProductType) => (
+                    <Card style={{ width: '18rem' }} key={item.id} className={Styles.cardObject}>
+                        {typeof item.foto == "string" ? <Card.Img variant="top" src={`http://localhost/cursoPHP/reactPHP/images/${item.foto}`}/>
+                        : item.foto}
+                        <Card.Body>
+                            <Card.Title>{item.name}</Card.Title>
+                        </Card.Body>
+                        <ListGroup className={`list-group-flush ${Styles.listGroup}`}>
+                            <ListGroup.Item>{item.descricao}</ListGroup.Item>
+                            <ListGroup.Item>Orçamento: {item.preco}</ListGroup.Item>
+                            <ListGroup.Item>Categoria: {item.categorias}</ListGroup.Item>
+                        </ListGroup>
+                        <Card.Body className={Styles.cardButtons}>
+                            <button><FaPencilAlt /><Link to={`/edit/${item.id}`} state={{ search_id: search_id, login: login}}>Editar</Link></button>
+                            <button onClick={() => excluir(item.id)}><FaTrash />Excluir</button>
+                        </Card.Body>
+                    </Card>
                 ))}
-            </div> : "Não há produtos"}
+            </div> : "Não há itens"}
         </div>
     )
 }

@@ -1,0 +1,74 @@
+.allLogin{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    background-color: #B0C4DE;
+    justify-content: center;
+    align-items: center;
+}
+.formLogin{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 10px solid #708090;
+    padding: 50px 20px 50px 20px;
+    background-color: #7F9BB8;
+    margin: 0 10px 0 10px;
+    max-width: 380px;
+    width: 100%;
+}
+.place::placeholder{
+    color: white;
+    opacity: 0.5;
+}
+.widthRegister{
+    max-width: 500px;
+}
+.buttonsLogin{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.buttonsLogin input{
+    width: 150px;
+    border: 5px solid #708090;
+    background-color: #B0C4DE;
+    color: white;
+    font-weight: 1000;
+    padding: 5px 0 5px 0;
+}
+.formLogin span{
+    color: white !important;
+    background-color: #708090 !important;
+    font-weight: bold !important;
+}
+.formLogin input{
+    background-color: #B0C4DE;
+    color: white;
+    font-weight: bold;
+}
+.messageLogin{
+    position: absolute;
+    top: -100px;
+    transition: 1s;
+    width: 100%;
+    max-width: 350px;
+    background-color: #EC7063;
+    padding: 20px 10px 20px 10px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10%;
+    border: 5px solid red;
+    opacity: 0.8;
+}
+.messageLogin a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    color: white !important;
+    font-weight: 1000;
+}
+.animar{
+    top: 50px
+}

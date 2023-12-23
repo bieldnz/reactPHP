@@ -1,0 +1,19 @@
+.floating {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    position: fixed;
+    scroll-behavior: initial;
+    background-color: blue;
+    top: calc(100% - 90px);
+    left: calc(100% - 90px);
+    border-radius: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.floating b{
+    color: white;
+    font-size: 80px;
+    margin-bottom: 15px;
+}

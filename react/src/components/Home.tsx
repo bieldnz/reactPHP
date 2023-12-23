@@ -1,53 +1,35 @@
 import { ChangeEvent } from 'react';
 import { useLocation } from 'react-router-dom';
-import ProductForm from './layout/ProductForm';
 import Listar from '../components/layout/Listar.tsx'
+import FloatingButton from './layout/FloatingButton.tsx';
 import { useState, useEffect } from "react"
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { ProductType } from './types/products.tsx';
+import Navbar from "./layout/Navbar.tsx"
 
 const Home = () => {
 
-    const [get, setGet] = useState<any>(null);
-    const [responce, setResponce] = useState<any>()
-    const[responceGet, setResponceGet] = useState<any>()
-    const [products, setProducts] = useState<any>({
-        name: "",
-        preco: "",
-        descricao: "",
-        categorias: "",
-        foto: undefined,
-    })
+    const [get, setGet] = useState<ProductType[]>();
+    const [last_id, setLast_id] = useState<ProductType>()
+    let search_id: string = ""
+    let login: string = ""
 
     const locationNavigate = useLocation();
-    let search_id: any
-    if(locationNavigate.state){
+
+    if (locationNavigate.state) {
         search_id = locationNavigate.state.search_id
+        login = locationNavigate.state.login
     }
 
-    const excluir = async(id: number) => {
+    const excluir = async (id: number): Promise<void> => {
         await fetch(`http://localhost/cursophp/reactPHP/delete.php?id=${id}`)
-        .then((res) => res.json())
-        .then((data) => console.log(data))
-
-        location.reload()
-    }
-
-    const handleOnFile = (e: ChangeEvent<HTMLInputElement>) => {
-        const files1 = e.target as HTMLInputElement;
-        const files = files1.files;
-        if(files && files.length > 0){
-            setProducts({ ...products, [(e.target as HTMLInputElement).name]: files[0] })
-            console.log(products)
+        if (get) {
+            setGet(get.filter((item: ProductType) => item.id != id))
         }
     }
 
-    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setProducts({ ...products, [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value })
-        console.log(products)
-    }
-
-    async function enviar(e:ChangeEvent<HTMLInputElement>) {
-        e.preventDefault()
+    async function enviar(e: ChangeEvent<HTMLInputElement>, products: ProductType, foto: any): Promise<void> {
+        e.preventDefault
         const formData = new FormData();
         formData.append('foto', products.foto)
         formData.append('name', products.name)
@@ -56,44 +38,48 @@ const Home = () => {
         formData.append('users_id', search_id);
         formData.append('categorias', products.categorias)
 
-        setResponce(await axios.post("http://localhost/cursophp/reactPHP/insert.php", formData, {
+        await axios.post("http://localhost/cursophp/reactPHP/insert.php", formData, {
             headers: { 'Content-Type': "multipart/form-data" }
-        }))
-        location.reload
+        })
+        products.foto = foto
+        get?.unshift(await getLastId(products))
+    }
+
+    const getLastId = async (product: ProductType) => {
+        await fetch(`http://localhost/cursophp/reactPHP/last_id.php?users_id=${search_id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                product.id = data
+                setLast_id(product)
+                return last_id
+            })
+        return product
     }
 
     const getProducts = async () => {
         const formDataGet = new FormData();
         formDataGet.append("users_id", search_id)
-        setResponceGet(await axios.post("http://localhost/cursophp/reactPHP/index.php", formDataGet, {
-            headers: {"Content-Type":"multipart/form-data"}
-        }))
+        try {
+            let res: AxiosResponse<ProductType[]> = await axios.post("http://localhost/cursophp/reactPHP/index.php", formDataGet, {
+                headers: { "Content-Type": "multipart/form-data" }
+            })
+            let data: ProductType[] = res.data
+            setGet(data)
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     useEffect(() => {
-        if(responceGet){
-            setGet(responceGet.data.products)
-            console.log(get)
-        }
-
-    }, [responceGet])
-
-    useEffect(() => {
         getProducts()
-        console.log(search_id)
     }, [])
-
-    useEffect(() => {
-        console.log(responce)
-    }, [responce])
-
+    
     return (
         <div>
-            <ProductForm enviar={enviar} handleOnChange={handleOnChange} handleOnFile={handleOnFile} />
-            <Listar get={get} excluir={excluir} search_id={search_id}/>
-            <button onClick={() => {console.log(get.products)}}>mostrar</button>
+            <Navbar name={login}/>
+            <Listar get={get} excluir={excluir} search_id={search_id} login={login}/>
+            <FloatingButton enviar={enviar} />
         </div>
     )
 }
-
 export default Home

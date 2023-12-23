@@ -5,6 +5,7 @@ import Home from './components/Home.tsx'
 import Edit from './components/Edit.tsx'
 import Login from './components/Login.tsx'
 import Register from './components/Register.tsx'
+import PageNotFound from './components/PageNotFound.tsx'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/cadastro",
         element: <Register/>
+      },
+      {
+        path: "*",
+        element:<PageNotFound/>
       }
     ]
   }
