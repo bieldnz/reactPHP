@@ -6,20 +6,21 @@
     header("Access-Control-Allow-Methods: *");
 
     include 'conexao.php';
-
+    
     if(isset($_FILES['foto'])){
         $foto = uniqid(rand()).$_FILES['foto']['name'];
         $foto_temp = $_FILES['foto']['tmp_name'];
         $name = $_POST['name'];
         $descricao = $_POST['descricao'];
+        $categorias = $_POST['categorias'];
         $preco = $_POST['preco'];
         $destination_path = getcwd().DIRECTORY_SEPARATOR;
         $target_path = $destination_path . "images". DIRECTORY_SEPARATOR . $foto;
+        $users_id = (int)$_POST['users_id'];
 
-        //$response = ["MSG" => $name];
-
-        $result = "INSERT INTO products (name, preco, descricao, foto) VALUES ('$name', '$preco', '$descricao','$foto')";
+        $result = "INSERT INTO products (name, preco, descricao, foto, categorias, users_id) VALUES ('$name', '$preco', '$descricao','$foto', '$categorias', $users_id)";
         $insert_products = $conn->prepare($result);
+
         $insert_products->execute();
 
         if($result){
@@ -29,17 +30,14 @@
                 ];
             }
             else{
-              /*$response = [
+              $response = [
                     "MSG" => "não funcionou"
-                ];*/
+                ];
             }
         }
-
-        
-
     }else{
         $response = [
-            "OPA" => "kjdlasfasdfasdfasdgasgd*"
+            "MSG" => "Insira uma imagem"
         ];
     }
 

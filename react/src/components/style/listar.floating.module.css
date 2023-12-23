@@ -1,0 +1,45 @@
+.itemCard{
+    display: flex;
+    justify-content: center;
+    gap: 5%;
+    flex-wrap: wrap;
+}
+.cardObject{
+    margin-top: 20px;
+    border: 5px solid #708090;
+    background-color: #7F9BB8;
+}
+.cardObject div{
+    color: white;
+    font-weight: bold;
+}
+.cardObject img{
+    height: 200px;
+    border-bottom: 5px solid #708090;
+}
+.cardButtons{
+    display: flex;
+    justify-content: center;
+    gap:5px
+}
+.cardButtons button{
+    width: 100px;
+    border: 5px solid #708090;
+    background-color: #B0C4DE;
+    color: white;
+    font-weight: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cardButtons a{
+    text-decoration: none !important;
+    color: white;
+}
+.listGroup div{
+    background-color: #7F9BB8;
+    border-bottom: 5px solid #708090 !important;
+}
+.listGroup div:nth-child(3){
+    border-bottom: none !important;
+}

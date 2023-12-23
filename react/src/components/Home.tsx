@@ -1,77 +1,85 @@
 import { ChangeEvent } from 'react';
-import ProductForm from './layout/ProductForm';
+import { useLocation } from 'react-router-dom';
 import Listar from '../components/layout/Listar.tsx'
+import FloatingButton from './layout/FloatingButton.tsx';
 import { useState, useEffect } from "react"
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { ProductType } from './types/products.tsx';
+import Navbar from "./layout/Navbar.tsx"
 
 const Home = () => {
 
-    const [get, setGet] = useState<any>(null);
-    const [responce, setResponce] = useState<any>()
-    const [products, setProducts] = useState<any>({
-        name: "",
-        preco: "",
-        descricao: "",
-        foto: undefined,
-    })
+    const [get, setGet] = useState<ProductType[]>();
+    const [last_id, setLast_id] = useState<ProductType>()
+    let search_id: string = ""
+    let login: string = ""
 
-    const excluir = async(id: number) => {
+    const locationNavigate = useLocation();
+
+    if (locationNavigate.state) {
+        search_id = locationNavigate.state.search_id
+        login = locationNavigate.state.login
+    }
+
+    const excluir = async (id: number): Promise<void> => {
         await fetch(`http://localhost/cursophp/reactPHP/delete.php?id=${id}`)
-        .then((res) => res.json())
-        .then((data) => console.log(data))
-
-        location.reload()
+        if (get) {
+            setGet(get.filter((item: ProductType) => item.id != id))
+        }
     }
 
-    const handleOnFile = (e: ChangeEvent<HTMLInputElement>) => {
-        const files1: any = e.target;
-        const files: any = files1.files[0];
-        setProducts({ ...products, [(e.target as HTMLInputElement).name]: files })
-        console.log(products)
-    }
-
-    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setProducts({ ...products, [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value })
-        console.log(products)
-    }
-
-    async function enviar(e:any) {
-        e.preventDefault()
+    async function enviar(e: ChangeEvent<HTMLInputElement>, products: ProductType, foto: any): Promise<void> {
+        e.preventDefault
         const formData = new FormData();
         formData.append('foto', products.foto)
         formData.append('name', products.name)
         formData.append('descricao', products.descricao)
         formData.append('preco', products.preco)
+        formData.append('users_id', search_id);
+        formData.append('categorias', products.categorias)
 
-        setResponce(await axios.post("http://localhost/cursophp/reactPHP/insert.php", formData, {
+        await axios.post("http://localhost/cursophp/reactPHP/insert.php", formData, {
             headers: { 'Content-Type': "multipart/form-data" }
-        }))
-        location.reload()
+        })
+        products.foto = foto
+        get?.unshift(await getLastId(products))
+    }
 
+    const getLastId = async (product: ProductType) => {
+        await fetch(`http://localhost/cursophp/reactPHP/last_id.php?users_id=${search_id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                product.id = data
+                setLast_id(product)
+                return last_id
+            })
+        return product
     }
 
     const getProducts = async () => {
-        await fetch("http://localhost/cursophp/reactPHP/index.php", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        })
-            .then((resp) => resp.json())
-            .then((data) => {
-                setGet(data.products)
-                console.log(get)
+        const formDataGet = new FormData();
+        formDataGet.append("users_id", search_id)
+        try {
+            let res: AxiosResponse<ProductType[]> = await axios.post("http://localhost/cursophp/reactPHP/index.php", formDataGet, {
+                headers: { "Content-Type": "multipart/form-data" }
             })
+            let data: ProductType[] = res.data
+            setGet(data)
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     useEffect(() => {
         getProducts()
     }, [])
-
+    
     return (
         <div>
-            <ProductForm enviar={enviar} handleOnChange={handleOnChange} handleOnFile={handleOnFile} />
-            <Listar get={get} excluir={excluir}/>
+            <Navbar name={login}/>
+            <Listar get={get} excluir={excluir} search_id={search_id} login={login}/>
+            <FloatingButton enviar={enviar} />
         </div>
     )
 }
-
 export default Home

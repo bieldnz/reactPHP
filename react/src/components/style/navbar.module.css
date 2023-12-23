@@ -1,0 +1,37 @@
+.navAll{
+    width: 100%;
+    background-color: #708090;
+    display: flex;
+    align-items: center;
+    padding: 10px 0 10px 0;
+    justify-content: space-between;
+}
+.alignLeft{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.navAll h1{
+    height: 100%;
+    font-size: 3vw !important;
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    border-right:solid 5px #B0C4DE;
+    padding: 15px 15px 15px 0;
+    margin-bottom: 0;
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+}
+.navAll div{
+    font-size: 3vw;
+    font-weight: bold;
+    color: white;
+    margin-left: 15px;
+}
+.navAll svg {
+    font-size: 4rem;
+    margin-right: 20px;
+    color: white;
+}
