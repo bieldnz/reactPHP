@@ -6,11 +6,12 @@ import { useState, useEffect } from "react"
 import axios, { AxiosResponse } from "axios";
 import { ProductType } from './types/products.tsx';
 import Navbar from "./layout/Navbar.tsx"
+import Loading from "./layout/Loading.tsx"
 
 const Home = () => {
 
-    const [get, setGet] = useState<ProductType[]>();
-    const [last_id, setLast_id] = useState<ProductType>()
+    const [get, setGet] = useState<ProductType[]>([]);
+    const [loading, setLoading] = useState<boolean>(false)
     let search_id: string = ""
     let login: string = ""
 
@@ -21,15 +22,36 @@ const Home = () => {
         login = locationNavigate.state.login
     }
 
-    const excluir = async (id: number): Promise<void> => {
-        await fetch(`http://localhost/cursophp/reactPHP/delete.php?id=${id}`)
+    const excluir = async (id: number, public_id_foto: string): Promise<void> => {
+        setLoading(true)
+        console.log(public_id_foto)
+        const formDelete = new FormData()
+        formDelete.append("public_id_foto", public_id_foto)
+        await axios.post(`https://apimarketplace-production.up.railway.app/delete.php?id=${id}`, formDelete)
+        .then((res) => res.data)
+        .then((data) => console.log(data))        
         if (get) {
             setGet(get.filter((item: ProductType) => item.id != id))
         }
+        setLoading(false)
     }
 
-    async function enviar(e: ChangeEvent<HTMLInputElement>, products: ProductType, foto: any): Promise<void> {
+    async function enviar(e: ChangeEvent<HTMLInputElement>, products: ProductType): Promise<void> {
         e.preventDefault
+        setLoading(true)
+        const formImage = new FormData()
+        formImage.append("file", products.foto)
+        formImage.append("upload_preset", "xm96za6d")
+
+        await axios.post("https://api.cloudinary.com/v1_1/djqgjria4/image/upload", formImage)
+            .then((res) => res.data)
+            .then((data) => {
+                products.foto = data.secure_url;
+                products.public_id_foto = data.public_id
+                console.log(data)
+            }
+        )
+
         const formData = new FormData();
         formData.append('foto', products.foto)
         formData.append('name', products.name)
@@ -37,30 +59,35 @@ const Home = () => {
         formData.append('preco', products.preco)
         formData.append('users_id', search_id);
         formData.append('categorias', products.categorias)
+        formData.append('public_id', products.public_id_foto)
 
-        await axios.post("http://localhost/cursophp/reactPHP/insert.php", formData, {
+        console.log(products)
+
+        await axios.post("https://apimarketplace-production.up.railway.app/insert.php", formData, {
             headers: { 'Content-Type': "multipart/form-data" }
-        })
-        products.foto = foto
-        get?.unshift(await getLastId(products))
+        }) .then((res) => res.data)
+        .then((data) => console.log(data))
+        getLastId(products)
     }
 
     const getLastId = async (product: ProductType) => {
-        await fetch(`http://localhost/cursophp/reactPHP/last_id.php?users_id=${search_id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                product.id = data
-                setLast_id(product)
-                return last_id
-            })
-        return product
+
+        let res = await axios.get(`https://apimarketplace-production.up.railway.app/last_id.php?users_id=${search_id}`, {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
+
+        let data = res.data
+        product.id = data
+        setGet([product, ...get])
+        setLoading(false)
     }
 
     const getProducts = async () => {
+        setLoading(true)
         const formDataGet = new FormData();
         formDataGet.append("users_id", search_id)
         try {
-            let res: AxiosResponse<ProductType[]> = await axios.post("http://localhost/cursophp/reactPHP/index.php", formDataGet, {
+            let res: AxiosResponse<ProductType[]> = await axios.post("https://apimarketplace-production.up.railway.app/index.php", formDataGet, {
                 headers: { "Content-Type": "multipart/form-data" }
             })
             let data: ProductType[] = res.data
@@ -68,17 +95,22 @@ const Home = () => {
         } catch (err) {
             console.log(err)
         }
+        setLoading(false)
     }
 
     useEffect(() => {
         getProducts()
     }, [])
-    
+
     return (
         <div>
-            <Navbar name={login}/>
-            <Listar get={get} excluir={excluir} search_id={search_id} login={login}/>
-            <FloatingButton enviar={enviar} />
+            <div>
+                <Navbar name={login} />
+                <Listar get={get} excluir={excluir} search_id={search_id} login={login} />
+                <FloatingButton enviar={enviar} login={login} />
+                <Loading loading={loading}/>
+            </div>
+            
         </div>
     )
 }

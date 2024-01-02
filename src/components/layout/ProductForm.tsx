@@ -10,7 +10,7 @@ import { ProductType } from "../types/products";
 import { CurrencyInput } from 'react-currency-mask';
 
 type ProductFormType = {
-  enviar: (e: ChangeEvent<HTMLInputElement>, products: ProductType, foto: any) => Promise<void>,
+  enviar: (e: ChangeEvent<HTMLInputElement>, products: ProductType) => Promise<void>,
   booleanProps: boolean,
   noEdit: boolean,
   products: ProductType,
@@ -45,7 +45,7 @@ const ProductForm = ({ enviar, booleanProps, noEdit, products, fotoAtual, login 
     setProduct(products)
   }, [products])
 
-  const handleOnFile = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleOnFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const files1 = e.target as HTMLInputElement;
     const files = files1.files;
     if (files && files.length > 0) {
@@ -55,22 +55,20 @@ const ProductForm = ({ enviar, booleanProps, noEdit, products, fotoAtual, login 
   }
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-
     setProduct({ ...product, [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value })
     console.log(product)
   }
 
-  const handleSubmit = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(foto)
+  const handleSubmit = async (e: ChangeEvent<HTMLInputElement>) => {
     setCheckForm(true)
-    if (product.name && (product.preco != "R$ 0,00" && product.preco != "") && (product.categorias != "Categorias" && product.categorias != "") && ((foto && noEdit) || (!foto && !noEdit))) {
-      
+    if (product.name && (product.preco != "R$ 0,00" && product.preco != "") && (product.categorias != "Categorias" && product.categorias != "") && ((foto && noEdit) || (!noEdit))) {
       if (noEdit) {
         setFoto(undefined)
       };      
       setShow(!show)
       setCheckForm(false)
-      enviar(e, product, foto)
+      await enviar(e, product)
+      console.log("lçkdfn")
     }
   }
 
@@ -94,7 +92,6 @@ const ProductForm = ({ enviar, booleanProps, noEdit, products, fotoAtual, login 
         <FloatingLabel controlId="floatingInput" label="Nome do projeto" className="mb-3">
           <Form.Control
             type="text"
-            placeholder="Ex: Meu projeto"
             name='name'
             onChange={(e: ChangeEvent<HTMLInputElement>) => handleOnChange(e)}
             value={product ? product.name : ""}
@@ -128,7 +125,6 @@ const ProductForm = ({ enviar, booleanProps, noEdit, products, fotoAtual, login 
         >
           <Form.Control
             as="textarea"
-            placeholder="Descrição"
             name='descricao'
             onChange={(e: ChangeEvent<HTMLInputElement>) => handleOnChange(e)}
             value={product ? product.descricao : ""}
@@ -158,8 +154,8 @@ const ProductForm = ({ enviar, booleanProps, noEdit, products, fotoAtual, login 
         <Button variant="secondary" onClick={product ? () => history("/home", { state: { search_id: product.users_id, login: login } }) : () => setShow(false)}>
           Fechar
         </Button>
-        <Button variant="primary" onClick={(e: any) => {
-          handleSubmit(e)
+        <Button variant="primary" onClick={async (e: any) => {
+          await handleSubmit(e)
         }}>
           Salvar
         </Button>

@@ -4,6 +4,7 @@ import axios from 'axios'
 import Styles from './style/login.module.css'
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Loading from "./layout/Loading.tsx"
 
 type ResponceType = {
   data: {
@@ -22,14 +23,15 @@ const Register = () => {
   const [loginInvalid, setLoginInvalid] = useState<string>("")
   const [passInvalid, setPassInvalid] = useState<string>("")
   const [validatedConf, setValidatedCon] = useState<string>("")
-  const [token, setToken] = useState<boolean>(true)
+  const [token, setToken] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const formData = new FormData()
   const history = useNavigate()
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setRegister({ ...register, [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value })
-    
+    console.log(register)
   }
 
   const createAccount = async () => {
@@ -38,23 +40,29 @@ const Register = () => {
     setValidatedCon("")
     setToken(true)
     checkLogin()
+    console.log(register.confirmPassword != register.password)
+    console.log()
+    if(register.confirmPassword != register.password){
+      setToken(false)
+      setValidatedCon("is-invalid")
+      console.log(token)
+    }
     if (token) {
-      console.log("Chegou")
+      setLoading(true)
       formData.append("login", register.login)
       formData.append("password", register.password)
-      setResponce(await axios.post("http://localhost/cursophp/reactPHP/select_verify.php", formData, {
+      setResponce(await axios.post("https://apimarketplace-production.up.railway.app/select_verify.php", formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
       }))
-      
     }
   }
 
   const registerAccount = async () => {
     formData.append("login", register.login)
     formData.append("password", register.password)
-    let res = await axios.post("http://localhost/cursophp/reactPHP/register.php", formData, {
+    let res = await axios.post("https://apimarketplace-production.up.railway.app/register.php", formData, {
       headers: {
         "Content-Type": "multipart-form-data"
       }
@@ -83,9 +91,6 @@ const Register = () => {
       setToken(false)
       setPassInvalid("Senha precisa de mais de 5 caracteres")
       setValidatedPass("is-invalid")
-    }if(register.confirmPassword != register.password){
-      setToken(false)
-      setValidatedCon("is-invalid")
     }
     console.log(token)
   }
@@ -102,6 +107,7 @@ const Register = () => {
         registerAccount()
       }
     }
+    setLoading(false)
   }, [responce])
 
   return (
@@ -158,6 +164,7 @@ const Register = () => {
       <span className={`${Styles.messageLogin} ${animation}`}>
         <a>LOGIN OU SENHA EXISTENTES</a>
       </span>
+      <Loading loading={loading}/>
     </div>
   )
 }

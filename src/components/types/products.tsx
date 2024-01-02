@@ -5,5 +5,6 @@ export type ProductType = {
     descricao: string,
     categorias: string,
     foto: string,
-    users_id?: number
+    users_id?: number,
+    public_id_foto: string
 }

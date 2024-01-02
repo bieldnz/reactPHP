@@ -18,7 +18,7 @@ const Login = () => {
     formData.append("login", loginUser.login)
     formData.append("password", loginUser.password)
     try {
-      let res:AxiosResponse<UserLogin> = await axios.post("http://localhost/cursophp/reactPHP/select_user.php", formData, {
+      let res:AxiosResponse<UserLogin> = await axios.post("https://apimarketplace-production.up.railway.app/select_user.php", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       let data: UserLogin = res.data

@@ -1,19 +1,27 @@
 .navAll{
     width: 100%;
+    height: 100px;
     background-color: #708090;
     display: flex;
     align-items: center;
     padding: 10px 0 10px 0;
     justify-content: space-between;
 }
-.alignLeft{
+.navAll div{
     display: flex;
-    justify-content: center;
     align-items: center;
+}
+.navAll svg{
+    font-size: 60px;
+    color: white;
+    margin-right: 15px;
+}
+div.dropdown-menu{
+    background-color: black;
 }
 .navAll h1{
     height: 100%;
-    font-size: 3vw !important;
+    font-size: 30px;
     display: flex;
     align-items: center;
     margin-left: 15px;
@@ -25,13 +33,23 @@
     font-size: 30px;
 }
 .navAll div{
-    font-size: 3vw;
+    font-size: 30px;
     font-weight: bold;
     color: white;
     margin-left: 15px;
 }
-.navAll svg {
-    font-size: 4rem;
-    margin-right: 20px;
-    color: white;
+
+@media only screen and (max-width: 500px){
+    .navAll div div{
+        display: none;
+    }
+}
+
+@media only screen and (max-width:230px){
+    .navAll div h1 {
+        display: none;
+    }
+    .navAll{
+        justify-content: center;
+    }
 }
