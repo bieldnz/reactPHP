@@ -1,10 +1,11 @@
-import React, { ChangeEvent, useState, useEffect, MouseEvent } from 'react'
+import { ChangeEvent, useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom"
 import { UserLogin } from "./types/user"
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Styles from "./style/login.module.css"
 import axios, { AxiosResponse } from "axios"
+import Loading from "./layout/Loading.tsx"
 
 const Login = () => {
 
@@ -12,8 +13,10 @@ const Login = () => {
   const [loginUser, setLoginUser] = useState<UserLogin>({id: 0, login: "", password: "" })
   const [responce, setResponce] = useState<UserLogin>()
   const [animation, setAnimation] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
 
   const login = async () => {
+    setLoading(true)
     const formData = new FormData()
     formData.append("login", loginUser.login)
     formData.append("password", loginUser.password)
@@ -26,6 +29,7 @@ const Login = () => {
     } catch (err) {
       console.log(err)
     }
+    setLoading(false)
   }
 
   const register = () => {
@@ -84,6 +88,7 @@ const Login = () => {
       <span className={`${Styles.messageLogin} ${animation}`}>
         <a>LOGIN OU SENHA INCORRETOS</a>
       </span>
+      <Loading loading={loading}/>
     </div>
   )
 }
