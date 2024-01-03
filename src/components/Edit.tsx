@@ -28,7 +28,7 @@ const Edit = () => {
         .then((res) => res.json())
         .then((data) => {
             setProduct(data);
-            console.log(data)
+            
         })
     }
 
@@ -36,7 +36,6 @@ const Edit = () => {
         e.preventDefault()
         setLoading(true)
         let old_public_id: string = product.public_id_foto;
-        console.log(product.public_id_foto)
         const formImage = new FormData();
         formImage.append("file", product.foto)
         formImage.append("upload_preset", "xm96za6d")
@@ -58,9 +57,7 @@ const Edit = () => {
 
         await axios.post(`https://apimarketplace-production.up.railway.app/editar.php?id=${id}`, formData, {
             headers: {"Content-Type": "multipart/form-data"}
-        }).then((res) => res.data)
-        .then((data) => console.log(data))
-        console.log(true)
+        })
         history("/home", { state: { search_id: search_id, login:  login} })
     }
 

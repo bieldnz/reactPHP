@@ -56,7 +56,6 @@ const ProductForm = ({ enviar, booleanProps, noEdit, products, fotoAtual, login 
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProduct({ ...product, [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value })
-    console.log(product)
   }
 
   const handleSubmit = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +67,6 @@ const ProductForm = ({ enviar, booleanProps, noEdit, products, fotoAtual, login 
       setShow(!show)
       setCheckForm(false)
       await enviar(e, product)
-      console.log("lçkdfn")
     }
   }
 

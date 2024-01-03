@@ -31,7 +31,6 @@ const Register = () => {
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setRegister({ ...register, [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value })
-    console.log(register)
   }
 
   const createAccount = async () => {
@@ -40,12 +39,9 @@ const Register = () => {
     setValidatedCon("")
     setToken(true)
     checkLogin()
-    console.log(register.confirmPassword != register.password)
-    console.log()
     if(register.confirmPassword != register.password){
       setToken(false)
       setValidatedCon("is-invalid")
-      console.log(token)
     }
     if (token) {
       setLoading(true)
@@ -72,8 +68,6 @@ const Register = () => {
     history("/")
   }
 
-  useEffect(() => {console.log(responce)}, [responce])
-
   const checkLogin = () => {
     if((register.login == "") || (register.login == undefined)){
       setToken(false)
@@ -92,7 +86,6 @@ const Register = () => {
       setPassInvalid("Senha precisa de mais de 5 caracteres")
       setValidatedPass("is-invalid")
     }
-    console.log(token)
   }
   
 

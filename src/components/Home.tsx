@@ -24,12 +24,9 @@ const Home = () => {
 
     const excluir = async (id: number, public_id_foto: string): Promise<void> => {
         setLoading(true)
-        console.log(public_id_foto)
         const formDelete = new FormData()
         formDelete.append("public_id_foto", public_id_foto)
-        await axios.post(`https://apimarketplace-production.up.railway.app/delete.php?id=${id}`, formDelete)
-        .then((res) => res.data)
-        .then((data) => console.log(data))        
+        await axios.post(`https://apimarketplace-production.up.railway.app/delete.php?id=${id}`, formDelete)      
         if (get) {
             setGet(get.filter((item: ProductType) => item.id != id))
         }
@@ -48,7 +45,6 @@ const Home = () => {
             .then((data) => {
                 products.foto = data.secure_url;
                 products.public_id_foto = data.public_id
-                console.log(data)
             }
         )
 
@@ -61,12 +57,9 @@ const Home = () => {
         formData.append('categorias', products.categorias)
         formData.append('public_id', products.public_id_foto)
 
-        console.log(products)
-
         await axios.post("https://apimarketplace-production.up.railway.app/insert.php", formData, {
             headers: { 'Content-Type': "multipart/form-data" }
-        }) .then((res) => res.data)
-        .then((data) => console.log(data))
+        })
         getLastId(products)
     }
 

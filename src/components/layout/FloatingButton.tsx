@@ -5,13 +5,13 @@ import { GrGallery } from "react-icons/gr"
 import { ProductType } from "../types/products"
 
 type FloatingType = {
-    enviar:(e: ChangeEvent<HTMLInputElement>, products: ProductType, foto: any) => Promise<void>,
+    enviar:(e: ChangeEvent<HTMLInputElement>, products: ProductType) => Promise<void>,
     login: string
 }
 
 const FloatingButton = ({ enviar, login }: FloatingType) => {
     const[booleanProps, setBooleanProps] = useState(true)
-    const product = {name: "", preco: "", descricao: "", categorias: "", foto: "", id:0}
+    const product = {name: "", preco: "", descricao: "", categorias: "", foto: "", id:0, public_id_foto:""}
     return (
         <>
             <button className={Styles.floating} onClick={() => setBooleanProps(!booleanProps)}>
