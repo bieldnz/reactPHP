@@ -25,6 +25,7 @@
     "text-mask-addons": "^3.8.0"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/jquery": "^3.5.29",
     "@types/react": "^18.0.28",
     "@types/react-bootstrap": "^0.32.35",
